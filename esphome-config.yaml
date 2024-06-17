@@ -1,0 +1,64 @@
+substitutions:
+  name: esphome-web-8d8164
+  friendly_name: ESP Effect Lamp
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: false
+  project:
+    name: esphome.web
+    version: '1.0'
+  includes:
+    - custom_components/custom_neo/custom_neo_light.h
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key:
+ota:
+  password:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-Effect-Lamp Fallback Hotspot"
+    password:
+
+captive_portal:
+
+dashboard_import:
+  package_import_url: github://esphome/example-configs/esphome-web/esp32.yaml@main
+  import_full_config: true
+
+# Sets up Bluetooth LE (Only on ESP32) to allow the user
+# to provision wifi credentials to the device.
+esp32_improv:
+  authorizer: none
+
+# To have a "next url" for improv serial
+web_server:
+
+light:
+  - platform: custom_neo
+    name: "My Effect Lamp"
+    type: GRB
+    variant: WS2812X
+    pin: GPIO27
+    num_leds: 60
+    color_correct: [80%, 80%, 80%]
+    effects:
+      - addressable_custom_twinkle:
+          name: Custom Twinkle Effect
+          twinkle_probability: 5%
+          progress_interval: 4ms
